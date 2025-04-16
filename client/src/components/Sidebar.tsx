@@ -1,72 +1,92 @@
-import { Link, useLocation } from "wouter";
+import React from 'react';
+import { Link, useLocation } from 'wouter';
+import { motion } from 'framer-motion';
+import {
+  HomeIcon,
+  ChartBarIcon,
+  DocumentTextIcon,
+  AdjustmentsHorizontalIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline';
+import { cn } from '../lib/utils';
 
-export default function Sidebar() {
-  const [location] = useLocation();
+interface MenuItem {
+  path: string;
+  label: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+}
 
+const menuItems: MenuItem[] = [
+  { path: '/', label: 'Home', icon: HomeIcon },
+  { path: '/analyze', label: 'Analyze', icon: ChartBarIcon },
+  { path: '/documents', label: 'Documents', icon: DocumentTextIcon },
+  { path: '/settings', label: 'Settings', icon: AdjustmentsHorizontalIcon },
+];
+
+interface StyledLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  href: string;
+  children: React.ReactNode;
+}
+
+const StyledLink = React.forwardRef<HTMLAnchorElement, StyledLinkProps>(
+  ({ className, children, href, ...props }, ref) => {
+    const [location] = useLocation();
+    const isActive = location === href;
+    
+    return (
+      <Link href={href}>
+        <a
+          ref={ref}
+          {...props}
+          className={cn(
+            'flex items-center rounded-lg px-4 py-2 text-gray-700 transition-colors',
+            isActive ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100',
+            className
+          )}
+        >
+          {children}
+        </a>
+      </Link>
+    );
+  }
+);
+
+StyledLink.displayName = 'StyledLink';
+
+const Sidebar: React.FC = () => {
   return (
-    <div className="bg-gray-900 text-white w-full md:w-64 flex-shrink-0 flex flex-col h-screen">
-      <div className="p-4 flex items-center">
-        <span className="material-icons mr-2">data_object</span>
-        <h1 className="text-xl font-bold">TextInsight</h1>
+    <motion.div
+      className="flex h-screen w-64 flex-col bg-white p-4 shadow-lg"
+      initial={{ x: -250 }}
+      animate={{ x: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-800">LexiMind</h1>
       </div>
-      <nav className="px-2 py-4 flex-grow">
-        <ul>
-          <li className="mb-2">
-            <Link href="/">
-              <a className={`flex items-center px-4 py-2 ${location === '/' ? 'bg-gray-800' : 'hover:bg-gray-800'} rounded-lg`}>
-                <span className="material-icons mr-3">dashboard</span>
-                <span>Dashboard</span>
-              </a>
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link href="/text-analysis">
-              <a className={`flex items-center px-4 py-2 ${location === '/text-analysis' ? 'bg-gray-800' : 'hover:bg-gray-800'} rounded-lg`}>
-                <span className="material-icons mr-3">text_fields</span>
-                <span>Text Analysis</span>
-              </a>
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link href="/document-comparison">
-              <a className={`flex items-center px-4 py-2 ${location === '/document-comparison' ? 'bg-gray-800' : 'hover:bg-gray-800'} rounded-lg`}>
-                <span className="material-icons mr-3">compare</span>
-                <span>Document Comparison</span>
-              </a>
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link href="/visualizations">
-              <a className={`flex items-center px-4 py-2 ${location === '/visualizations' ? 'bg-gray-800' : 'hover:bg-gray-800'} rounded-lg`}>
-                <span className="material-icons mr-3">analytics</span>
-                <span>Visualizations</span>
-              </a>
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link href="/history">
-              <a className={`flex items-center px-4 py-2 ${location === '/history' ? 'bg-gray-800' : 'hover:bg-gray-800'} rounded-lg`}>
-                <span className="material-icons mr-3">history</span>
-                <span>History</span>
-              </a>
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link href="/settings">
-              <a className={`flex items-center px-4 py-2 ${location === '/settings' ? 'bg-gray-800' : 'hover:bg-gray-800'} rounded-lg`}>
-                <span className="material-icons mr-3">settings</span>
-                <span>Settings</span>
-              </a>
-            </Link>
-          </li>
+
+      <nav className="flex-1">
+        <ul className="space-y-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <li key={item.path}>
+                <StyledLink href={item.path}>
+                  <Icon className="mr-3 h-6 w-6" />
+                  <span>{item.label}</span>
+                </StyledLink>
+              </li>
+            );
+          })}
         </ul>
       </nav>
-      <div className="p-4">
-        <div className="px-4 py-2 bg-primary rounded-lg text-center cursor-pointer">
-          <span className="material-icons mb-1">new_document</span>
-          <span className="block">New Analysis</span>
-        </div>
-      </div>
-    </div>
+
+      <button className="mt-auto flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+        <PlusIcon className="mr-2 h-5 w-5" />
+        <span>New Analysis</span>
+      </button>
+    </motion.div>
   );
-}
+};
+
+export default Sidebar;

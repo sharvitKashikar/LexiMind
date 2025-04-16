@@ -12,9 +12,9 @@ export default function Header() {
           </button>
           <div className="flex items-center">
             <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-white">
-              <span>JD</span>
+              <span className="text-xl font-bold">SK</span>
             </div>
-            <span className="ml-2 text-sm font-medium text-gray-700 hidden md:block">John Doe</span>
+            <span className="ml-2 text-sm font-medium text-gray-700 hidden md:block">Sharvit Kashikar</span>
           </div>
         </div>
       </div>

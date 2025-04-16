@@ -89,7 +89,7 @@ export type PreprocessingSteps = {
   lemmatized: string[];
 };
 
-export type AnalysisResult = {
+export interface AnalysisResult {
   documentId: number;
   originalText: string;
   wordCount: number;
@@ -106,9 +106,17 @@ export type AnalysisResult = {
   };
   preprocessing?: PreprocessingSteps;
   tfidf?: TfIdfResult;
-};
+}
 
-export type DocumentComparison = {
+export interface DocumentMetrics {
+  nlpTerms: number;
+  technicalContent: number;
+  academicStyle: number;
+  positiveSentiment: number;
+  complexity: number;
+}
+
+export interface DocumentComparison {
   similarityScore: number;
   similarityExplanation: string;
   commonKeywords: string[];
@@ -116,25 +124,13 @@ export type DocumentComparison = {
     doc1: string[];
     doc2: string[];
   };
-  doc1Metrics: {
-    nlpTerms: number;
-    technicalContent: number;
-    academicStyle: number;
-    positiveSentiment: number;
-    complexity: number;
-  };
-  doc2Metrics: {
-    nlpTerms: number;
-    technicalContent: number;
-    academicStyle: number;
-    positiveSentiment: number;
-    complexity: number;
-  };
-};
+  doc1Metrics: DocumentMetrics;
+  doc2Metrics: DocumentMetrics;
+}
 
-export type AnalyzeTextOptions = {
+export interface AnalyzeTextOptions {
   preprocessing: boolean;
   tfidf: boolean;
   sentiment: boolean;
   keywords: boolean;
-};
+}
